@@ -1,0 +1,7 @@
+#!/bin/bash
+if [2 -gt 3]
+     then
+     echo "2 is greater"
+     else
+     echo "2 is not greater"
+fi

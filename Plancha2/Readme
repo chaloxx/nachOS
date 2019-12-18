@@ -1,0 +1,48 @@
+           Plancha 2
+           ---------
+
+*Ejercicio 1 implementado en threads/synch.cc
+*Ejercicio 2 implementado en threads/port.hh y threads/port.cc
+*Ejercicio 3 implementado en threads/thread.cc (métodos Join y Finish)
+*Ejercicio 4 implementado en threads/scheduler.cc,threads/scheduler.hh,threads/thread.cc,
+  threads/thread.hh : 
+    *) Usamos un arreglo de listas para representar una multicola multinivel.
+    *) L_PRIORITY es la prioridad más alta y 0 la más baja (threads/scheduler.hh).
+    *) Cada thread recibe en su constructor que prioridad tiene como un argumento.
+    *) Podemos setear la prioridad de un thread a trávez del método SetPriority (threads/thread.cc).
+    *) Para solucionar el problema de inversión de prioridades, chequeamos si la prioridad del hilo que 
+ tiene el lock es mayor que la del que espera tomarlo. Si es así, seteamos la prioridad del hilo con el lock
+ a la del hilo bloqueado. La vieja prioridad es almacenada dentro del lock y es responsabilidad del lock que 
+ tiene el lock reestablecer su prioridad.
+
+Rta 4.b : La herencia de prioridad no se puede aplicar a semáforos porque el acceso de un proceso al
+semáforo en este caso no depende necesariamente de otro proceso que halla consumido el semáforo,por lo 
+tanto el proceso entrante no sabe la prioridad de que proceso deberá modificar.
+
+
+* Los test están en threads/Test
+* Para correr los tests:
+ Ej1 A :  ./nachos -ej1A -d s
+ Ej1 B : ./nachos -ej1B -d c
+ Ej2 : ./nachos -ej2 -d p
+ Ej3 : ./nachos -ej3 -d s
+ Ej4 A : ./nachos -ej4A -d s
+ Ej4 B : ./nachos -ej1B -d s
+
+*Sobre los tests:
+  Ej1 A : La idea es que los locks deberían proteger la variable visitante para que no se lea
+  su valor hasta que haya sido escrito.
+  Ej1 B : La idea es que los productores y los consumidores se sincronicen avisando si el buffer
+  no está lleno o no está vacío.
+  Ej2 : Una cantidad de threads envia mensajes y otra los recibe.
+  Ej3 : Creamos varios hilos de ejecución, el hilo main debe bloquearse hasta que todos terminen.
+  Ej4 A: Comprobar que el scheduler elige siempre al hilo que esté en frente de la cola de mayor
+  prioridad, recordad que L_PRIORITY tiene mayor prioridad y 0 menor.
+  Ej4 B: Testear que cuando un hilo A de prioridad n tiene un lock y un hilo B de prioridad m pide 
+  el mismo lock, con m > n, si A no lo ah soltado su prioridad cambia a m, por lo que será encolado en 
+  la cola de prioridad m. Una vez liberado el lock, A debe volver a tener prioridad n.
+  
+
+
+        
+

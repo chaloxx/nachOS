@@ -1,0 +1,4 @@
+./nachos -cp ../userland/prueba prueba
+./nachos -cp ../userland/reader reader
+./nachos -cp ../userland/writer writer
+./nachos -cp ../userland/removedor removedor

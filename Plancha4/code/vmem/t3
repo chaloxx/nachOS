@@ -1,0 +1,12 @@
+#!/bin/bash
+
+for i in `seq 1 100`;
+do
+./nachos -x ../userland/prueba3   -rs $i   ;
+if  (($? > 0)); then echo Con $i no anduvo; break
+fi  
+echo Con $i si anduvo
+done     
+echo;
+echo;
+echo Termino el test

@@ -1,0 +1,63 @@
+                   Plancha 4
+                   ---------
+* Nota : Para correr los tests, se sugiere usar los scripts bash 
+que están dentro de userprog, los mismos corren con distintas valores 
+la opción -rs
+
+Archivos modificados:
+   - userprog/address_space.cc
+   - userprog/address_space.hh
+   - userprog/exception.cc
+   - machine/statistics.hh
+   - machine/statistics.cc
+
+*Ej1 : Se agrega un método FindVPN a la AddressSpace que  agregué a la TLB la entrada de la pageTable
+ que causo el fallo de página.Ver userprog/address_space.hh, userprog/address_space.cc y userprog/
+exception.cc.
+
+*Ej3 : Se agrega:
+    *) el método CopyFromDisk a la AddressSpace que dada una TranslationEntry copia la 
+       página virtual correspondiente desde el disco a la memoria principal.
+    *)Tambíen agregamos un bitmap VpInMemory en la AddressSpace que determina si una página virtual se 
+      encuentra en la memoria principal o no.
+
+*Ej4 : Se implementa :
+     *) un bitmap ShadowPageTable para determinar si una página se encuentra en swap
+         o no.
+     *) métodos para copiar desde y hacia swap.
+     *) un coremap para determinar que proceso está usando un marco físico (útil si necesitamos
+        copiar el marco a swap).Para implementar el mismo se uso una estructura Entry que contiene:
+         - que proceso ocupa la página (nullptr si ninguno la tiene)
+         - con que página virtual de dicho proceso se lleno el marco
+         - una bandera inSwap que determina si se está copiando el marco a swap (en dicho caso la 
+         página no se puede usar hasta que termine de ser copiada).
+     *) mmIndex es un índice del coremap. Cada vez que se desaloje una página, se mueve el índice
+        hacia la próxima página a desalojar.
+
+*Ej5 : Algoritmos de reemplazo de página que usé:
+     ClockAlgorithm : Busca una página que no haya sido usada recientemente. Para esto mira el bit
+use de la entrada de la pageTable. Si está encendido lo apaga y apunta hacia la siguiente página.
+Repite hasta que encuentra alguna con el bit apagado.
+     ImprovedClockAlgorithm: Se calcula un coeficiente de prioridad para cada página a partir de los
+bits use y dirty. Se elige una que tenga coeficiente 0 o la que tenga el menor coeficiente. Se dan 
+una vueltas al coremap, se va apagando el bit de use y se elige la que tenga menor coeficiente,
+si en el medio se encuentra una con coeficiente 0 se elige y termina el algoritmo.
+
+
+Tabla de coeficientes:
+-----------------------
+use   dirty    prioridad
+---   -----    ---------
+false false     0 (mayor prioridad de elección)
+false true      1
+true  false     2
+true  true      3 (menor prioridad de elección)
+
+Cosas que no pude arreglar: 
+   *) ImprovedClockAlgorithm: Elige siempre la misma página.
+   *) Apagar bit de dirty: Se produce un fallo de página con una página virtual inexistente o 
+    el programa entra en un bucle. Al parecer en algún punto copia basura. Pero si lo dejo prendido 
+    funciona, lo cual es raro porque hay mucha más escrituras. Tal vez en vez de copiar basura
+    le está faltando copiar algo.
+
+

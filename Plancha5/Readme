@@ -1,0 +1,77 @@
+                          Plancha 5
+                          ---------
+NOTA: Esta plancha la implementé sobre la plancha de multiprogramación, pero no tiene nada de 
+      memoria virtual.
+
+*Ej1 a: Cada thread representa un archivo abierto con una estructura OpenFile. Dicha estructura
+      tiene posee una variable interna privada seekPosition. Con esto cada hilo ya tiene una seek privada
+      dentro del archivo. Ver filesystem/open_file.hh y threads/thread.hh
+
+*Ej1 b: Basandome en el típico problema de lectores y escritores, implemente:
+      *) una estructura LockWR para cada archivo abierto con métodos para blockear el archivo 
+         Ver filesystem/lockwr.cc y filesystem/lockwr.hh.
+      *) una openFileTable global para almacenar los locks. Para esto también definí una nueva estruc-
+       tura TableT (ver lib/table2.hh) que permita ingresar un elemento en un índice dado.
+         Ver threads/system.cc, threads/system.hh.
+      *) Modifique:
+              - Métodos Open y Remove de FileSystem
+              - Métodos Write y Read de OpenFile
+
+
+*Ej1 c: Dentro de la misma estructura LockWR, implementé un método Remove, el cual bloquea el hilo
+      hasta que no haya ningún otro hilo con el archivo abierto. Llamamos link a la cantidad de 
+      hilos que tiene el archivo abierto. Cuando link = 0, los recursos que usaba el archivo
+      pueden ser liberados.
+
+Para testear esto use prueba, el cual ejecuta varios reader y writers que se pelean por el archivo
+y un removedor que deberá esperar hasta que los readers y writers hayan cerrado el archivo.
+Para testearlo con varias semillas use el script bash t1.
+
+*Ej2 : Usamos un nivel de indirección en los accesos a sectores de datos. El sector donde se guarda
+ la cabecera del archivo será ahora usado para almacenar una tabla, cada entrada en esta tabla apunta
+a otra tabla y las entradas de esta última son las que apuntan a sectores que contengan datos.
+Modifiqué file_header.hh (ya no se usa raw_file_header.hh) y file_header.cc.
+
+
+*Ej3 : Inicialmente se crea una cabecera sin bloques reservados. Luego cada vez que hay una escritu-
+ra se alocan la cantidad de bloques que se necesitan. Acá tuve que tener cuidado con lo bytes libres
+dentro de un sector de datos o de un sector de metadatos (tabla que apunta a sectores de datos).
+Otra cosa con la que tuve que tener cuidado es con la posición actual dentro del archivo
+ (ver MissingBytes en FileHeader). En general,solo tuve que agregar más modificaciones a lo que había
+implementado en  Ej2.
+
+
+Ej2 y Ej3 son testeadas con el filesystem test del nachos (-tf) y copiando cualquier archivo basura
+desde unix a nachos.
+
+
+*Ej5 : Se determina que el directorio creado por el filesytem es el root. Luego al hacer un Create
+se separa la ruta en pedazos. Por ejemplo si tengo la ruta  hola/soy/yo, podemos determinar recursi-
+vamoente que hola y soy son directorios y yo es el archivo. Se modificó:
+        *) directory.cc y directory.hh.
+        *) file_system.cc.
+        *) thread.cc y thread.hh. Ahora cada hilo apunta a un determinado directorio y cada hilo
+    forkeado comienza apuntando al directorio al que apuntaba su padre.
+        *) Se agregaron llamadas a sistema para cambiar el directorio (ChangeDir), para remover
+    un archivo (Remove) y para listar el contenido del directorio actual (ListDir).
+        *) Métodos para crear rutas absolutas a partir de rutas relativas (ver AbsolutePath en system.cc)
+    Obs: La semántica de ".." es retroceder al directorio padre, para esto se almacena el número 
+ de sector del padre dentro del RawFileHeader y se guarda el contenido del RawFileHeader en el 
+ disco. Si un directorio no tiene padre (caso del root) se identifica con -1.
+
+* Para copiar desde unix a nachos use:
+     ./nachos -cp ../userland/prueba  prueba
+     ./nachos -cp ../userland/reader  reader
+     ./nachos -cp ../userland/writer  writer
+     ./nachos -cp ../userland/removedor  removedor
+
+* Se puede ver el árbol del filesystem con ./nachos -D
+
+* Para testear con varias semillas: ./t1
+
+* Se puede usar -cd [path] para cambiar el directorio del hilo main
+
+
+
+
+

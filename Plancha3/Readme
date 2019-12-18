@@ -1,0 +1,29 @@
+                    Plancha 3
+                    ---------
+
+*Todos los archivos fuentes de los tests se encuentran en userland
+*Ej1: Ver userprog/transfer.hh y userprog/transfer.cc (Se testea al correr programas de usuario)
+*Ej2: Ver userprog/exception.cc, userprog/synch_console.cc y userprog/synch_console.hh.
+      Cada proceso necesita una table de archivos abiertos (clase OpenFile), la agregue en
+      threads/thread.hh y agregue métodos en threads/thread.cc para su acceso.
+ 
+*Ej3 a : se propone crear un bitmap con las páginas de la memoria principal, marcando aquellas
+que se ocupan y desmarcando las que se desocupan. Se implementa en userprog/address_space.cc 
+y threads/sistem.cc.
+Nombramos este bitmap como paginationTable.
+
+*Ej3 b : se propone usar el timer de nachos para programar interrupciones.
+ Al no ingresar la opción -rs se crea un timer que ejecutara una interrupción cada TIMER_TICKS ticks.
+ Se implementa en threads/system.cc y en machine/timer.cc.
+
+*Ej4: Usé el estilo Unix.Ver userprog/exception.cc.
+
+*Ej5 a: Ver userland/.
+*Ej5 b: La idea es setear una bandera de acuerdo a sí queremos que un programa se ejecute como
+demonio o no. La bandera se enciende si se parsea & como primer carácter al ingresar que programa
+queremos ejecutar, por ejemplo: &matmult se ejecuta en segundo plano y matmult se ejecuta en primer
+plano.
+
+
+
+

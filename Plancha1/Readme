@@ -1,0 +1,144 @@
+               Plancha 1
+               ---------
+
+
+1) 4 kbytes. (machine/mmu.hh)
+
+2) Cambiando NUM_PHYS o PAGE_SIZE (MEMORY_SIZE = NUM_PHYS_PAGES * PAGE_SIZE).
+
+3)  131 kbytes. (machine/disk.hh)
+
+4) 61 operaciones. (machine/mips_sim.cc)
+
+5) * Suma los valores de los registros rs y rt
+   * Si rs y rt tienen distinto signo no hay desborde, si rs y rt tienen mismo signo y la suma tiene un signo distinto a los argumentos entonces existe desborde.
+
+6) 
+
+Initialize (system.cc) >strcmp (string.h)
+                         ASSERT  (lib/utility.hh)
+                         RandomInit (system_dep.cc)
+                         atoi (stdlib.h)
+                         atof (stdlib.h)
+                         Timer (timer.cc)
+                         Thread (thread.cc)
+                         SetStatus (thread.cc)
+                         Enable (machine/interrupt.cc)
+                         CallOnUserAbort (machine/system_dep.cc)
+                         PreemptiveScheduler (preemptive.hh)
+                         Debugger (userprog/debugger.cc)
+                         Machine (machine/machine.cc)
+                         SetExceptionHandlers (userprog/exception.cc)
+                         SynchDisk  (filesys/synch_disk.cc)
+                         FileSystem (filesys/file_system.cc)
+                         PostOffice (network/post.cc)
+
+
+
+
+DEBUG (utility.hh) > Print (debugg.cc)
+
+ASSERT (utility.hh) > fprintf (stdio.h)
+                      fflush (stdio.h)
+                      abort (stdlib.h)
+
+StartProcess (userprog/prog_test.cc) > ASSERT  (lib/utility.hh)
+                                       Open (filesys/file_system.cc)  
+                                       AddressSpace (userprog/address_space.cc)
+                                       InitRegisters (userprog/address_space.cc)
+                                       RestoreState (userprog/address_space.cc)
+                                       Run (threads/scheduler.cc)
+
+
+ConsoleTest (main.cc) > Console (machine/console.cc)
+                        Semaphore (threads/synch.cc)
+                        P (threads/synch.cc)
+                        GetChar  (machine/console.cc)
+                        PutChar  (machine/console.cc)
+                                           
+PrintVersion  (main.cc) > printf (stdio.h)
+
+Halt (machine/interrupt.cc) >  printf (stdio.h)
+                               Print (threads/thread.cc)
+                                                          
+
+7) Emular una CPU nos permite modificarla, probarla con distintos parámetros,etc.
+   Además permite que la implementación de nachos sea independiente de la máquina host.
+
+
+8) `+`  - encender todos los mensajes de depuración
+    `t`   - sistema de thread
+    `s`  - semáforos, bloquos y condiciones
+    `i`  - emular interrupción
+    `m`  -  emulación de máquina 
+    `d` -  emulación de disco
+    `f` - sistema de archivo 
+    `a` - espacio de direcciones
+    `n` -  emulación de red
+
+9) El efecto de ASSERT es abortar la ejecución si la condición dada es falsa.
+   El efecto de DEBUG es imprimir un mensaje de debug cuando esté encendida la bandera pasada como argumento.
+
+
+10) code/userprogr/Makefile
+
+11) Cuando un thread realiza un pop sobre un objeto de la clase List se devuelve NULL si la lista es vacía,
+    mientras que si un thread encuentra una lista de la clase SynchList vacía, al hacer pop espera hasta que algún elemento entre.
+
+12) bin/out.c
+    bin/coff2noff.c
+    bin/readnoff.c
+    bin/coff2flat.c
+    bin/disasm.c
+    bin/main.c
+    bin/fuse/nachosfuse.c
+    threads/main.cc
+    userland/filetest.c
+    userland/halt.c
+    userland/sort.c
+    userland/matmult.c
+    userland/shell.c
+    userland/tiny_shell.c
+
+El main que ejecuta el Nachos en userprog es el que se encuentra en threads/main.cc 
+
+ 
+13)
+/// Comandos generales
+/// ---------------
+///
+/// * `-d`  -- activa mensajes de depuración
+/// * `-p`  -- habilita multitarea para threads en el kernel
+/// * `-rs` -- hace que  `Yield`  ocurra en puntos distintos
+/// * `-z`  -- imprime información de  versión y  copyright
+///
+/// Comandos de  *USER_PROGRAM* 
+/// ----------------------
+///
+/// * `-s`  -- hace que  los programas de usuario sea ejecutados en modo de un solo paso
+/// * `-x`  -- ejecuta un programa de usuario
+/// * `-tc` -- testea la consola
+///
+/// Comandos de *FILESYS*
+/// -----------------
+///
+/// * `-f`  -- formatea el disco
+/// * `-cp` -- copia un archivo de UNIX  a Nachos
+/// * `-pr` -- imprime un archivo de Nachos en la salida estandar
+/// * `-rm` -- remueve un archivo Nachos del sistema de archivos
+/// * `-ls` -- lista el contenido del directorio de Nachos
+/// * `-D`  -- imprime los contenidos del sistema de archivos entero
+/// * `-tf` -- testea la performance del sistema de archivos de Nachos
+///
+/// Comandos de  *NETWORK* 
+/// -----------------
+///
+/// * `-n`  -- establece la confiabilidad de la red
+/// * `-id` -- establece el id del host de la máquina (necesario para la red)
+/// * `-tn` -- ejecuta un simple test del software de red de Nachos
+
+ -rs pasa un número como semilla para que se genere un número random, el cuál es usado para producir una interrupción.
+
+14) Mirar threads/thread_test.cc
+15) Mirar threads/threads_test.cc y threads/Makefile
+16) Mirar threads/threads_test.cc
